@@ -8,6 +8,10 @@ import (
 )
 
 func main() {
+	message := os.Getenv("ECHO")
+        if message == "" {
+        	message = "No ECHO updates yet"
+        }
 	http.HandleFunc("/", hello)
 	port := os.Getenv("PORT")
 	if port == "" {
