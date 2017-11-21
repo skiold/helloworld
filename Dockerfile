@@ -1,3 +1,5 @@
+FROM hashicorp/consul-template as ctpl
+
 FROM debian:jessie
 
 # install curl
@@ -19,4 +21,10 @@ RUN cd /go/src/github.com/deis/helloworld && go install -v .
 
 EXPOSE 80
 
-ENTRYPOINT ["/go/bin/helloworld"]
+COPY --from=ctpl /consul-template /usr/local/bin
+COPY _infra /_infra/
+
+ENTRYPOINT ["/consul-template"]
+
+CMD ["-template", "_infra/environment.tpl:environment",
+     "-exec", "_infra/exec.sh"]
